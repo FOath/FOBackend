@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: fobackend
+      POSTGRES_USER: fobackend
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: src/Services/AuthService/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Database=Host=postgres;Database=fobackend;Username=fobackend;Password=secret
+      - ConnectionStrings__Redis=redis:6379
+      - Jwt__Secret=${JWT_SECRET:-your-256-bit-secret-key-here-change-in-production}
+      - Urls=http://0.0.0.0:8081
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - authdata:/app/data
+
+  matchmaking-service:
+    build:
+      context: .
+      dockerfile: src/Services/MatchmakingService/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Redis=redis:6379
+      - Services__AuthUrl=http://auth-service:8081
+      - Services__BattleUrl=http://battle-service:9081
+      - Urls=http://0.0.0.0:8082
+    depends_on:
+      - redis
+      - auth-service
+
+  battle-service:
+    build:
+      context: .
+      dockerfile: src/Services/BattleService/Dockerfile
+    ports:
+      - "7777:7777/udp"
+      - "9081:9081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Kcp__Port=7777
+      - Kcp__ListenAddress=0.0.0.0
+      - Services__AuthUrl=http://auth-service:8081
+      - Services__StateUrl=http://state-service:8084
+      - NodeId=battle-1
+      - Urls=http://0.0.0.0:9081
+    depends_on:
+      - auth-service
+      - state-service
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  state-service:
+    build:
+      context: .
+      dockerfile: src/Services/StateService/Dockerfile
+    ports:
+      - "8084:8084"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__Database=Host=postgres;Database=fobackend;Username=fobackend;Password=secret
+      - Services__AuthUrl=http://auth-service:8081
+      - ObjectStorage__Endpoint=${MINIO_ENDPOINT:-}
+      - ObjectStorage__AccessKey=${MINIO_ACCESS_KEY:-}
+      - ObjectStorage__SecretKey=${MINIO_SECRET_KEY:-}
+      - ObjectStorage__Bucket=fobackend-state
+      - Urls=http://0.0.0.0:8084
+    depends_on:
+      - postgres
+      - auth-service
+    volumes:
+      - statedata:/app/data
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: src/ApiGateway/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Jwt__Secret=${JWT_SECRET:-your-256-bit-secret-key-here-change-in-production}
+      - Urls=http://0.0.0.0:8080
+      - ReverseProxy__Clusters__auth-cluster__Destinations__auth__Address=http://auth-service:8081
+      - ReverseProxy__Clusters__matchmaking-cluster__Destinations__matchmaking__Address=http://matchmaking-service:8082
+      - ReverseProxy__Clusters__state-cluster__Destinations__state__Address=http://state-service:8084
+    depends_on:
+      - auth-service
+      - matchmaking-service
+      - state-service
+
+volumes:
+  pgdata:
+  redisdata:
+  authdata:
+  statedata:

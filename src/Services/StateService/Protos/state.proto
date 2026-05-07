@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+option csharp_namespace = "State";
+
+package fobackend.state;
+
+service StateService {
+  rpc SaveFrames (stream SaveFramesRequest) returns (SaveFramesResponse);
+  rpc GetFramesForReconnect (GetFramesRequest) returns (stream GetFramesResponse);
+  rpc GetReplay (GetReplayRequest) returns (GetReplayResponse);
+  rpc ListMatches (ListMatchesRequest) returns (ListMatchesResponse);
+  rpc SaveMatchMetadata (SaveMatchMetadataRequest) returns (SaveMatchMetadataResponse);
+}
+
+message SaveFramesRequest {
+  string match_id = 1;
+  int32 start_frame = 2;
+  repeated FrameSyncPackage frames = 3;
+  bool is_final_batch = 4;
+}
+
+message FrameSyncPackage {
+  int32 frame_number = 1;
+  int64 server_time = 2;
+  repeated FramePlayerInput inputs = 3;
+}
+
+message FramePlayerInput {
+  string player_id = 1;
+  bytes input_data = 2;
+  int32 input_checksum = 3;
+}
+
+message SaveFramesResponse {
+  bool success = 1;
+  int32 saved_count = 2;
+  string storage_path = 3;
+}
+
+message GetFramesRequest {
+  string match_id = 1;
+  string player_id = 2;
+  int32 from_frame = 3;
+  int32 to_frame = 4;
+}
+
+message GetFramesResponse {
+  repeated FrameSyncPackage frames = 1;
+  bool has_more = 2;
+  int32 next_frame = 3;
+}
+
+message GetReplayRequest {
+  string match_id = 1;
+  string requester_player_id = 2;
+}
+
+message GetReplayResponse {
+  bool success = 1;
+  string download_url = 2;
+  int64 expires_at = 3;
+  int32 total_frames = 4;
+  int64 file_size_bytes = 5;
+}
+
+message ListMatchesRequest {
+  string player_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+  int32 game_mode = 4;
+}
+
+message ListMatchesResponse {
+  repeated MatchSummary matches = 1;
+  int32 total_count = 2;
+}
+
+message MatchSummary {
+  string match_id = 1;
+  int32 game_mode = 2;
+  string player1_id = 3;
+  string player2_id = 4;
+  string winner_id = 5;
+  int32 total_frames = 6;
+  int32 duration_sec = 7;
+  int64 played_at = 8;
+  bool has_replay = 9;
+}
+
+message SaveMatchMetadataRequest {
+  string match_id = 1;
+  string room_id = 2;
+  int32 game_mode = 3;
+  string player1_id = 4;
+  string player2_id = 5;
+  string winner_id = 6;
+  int32 total_frames = 7;
+  int32 duration_sec = 8;
+  int32 end_reason = 9;
+}
+
+message SaveMatchMetadataResponse {
+  bool success = 1;
+}

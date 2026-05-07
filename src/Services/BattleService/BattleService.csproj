@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.59.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.59.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.59.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
+    <PackageReference Include="protobuf-net" Version="3.2.56" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\FOBackend.Protocol\FOBackend.Protocol.csproj" />
+    <ProjectReference Include="..\..\FOBackend.Infrastructure\FOBackend.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\FOBackend.Core\FOBackend.Core.csproj" />
+    <ProjectReference Include="..\..\FOBackend.Transport\FOBackend.Transport.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="Protos\battle.proto" GrpcServices="Server" />
+    <Protobuf Include="..\AuthService\Protos\auth.proto" GrpcServices="Client">
+      <Link>Protos\auth.proto</Link>
+    </Protobuf>
+    <Protobuf Include="..\StateService\Protos\state.proto" GrpcServices="Client">
+      <Link>Protos\state.proto</Link>
+    </Protobuf>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+option csharp_namespace = "Battle";
+
+package fobackend.battle;
+
+service BattleService {
+  rpc StartRoom (StartRoomRequest) returns (StartRoomResponse);
+  rpc StopRoom (StopRoomRequest) returns (StopRoomResponse);
+  rpc GetNodeStats (NodeStatsRequest) returns (NodeStatsResponse);
+  rpc HealthCheck (HealthCheckRequest) returns (HealthCheckResponse);
+  rpc GetRoomState (GetRoomStateRequest) returns (GetRoomStateResponse);
+}
+
+message StartRoomRequest {
+  string room_id = 1;
+  repeated PlayerConnection players = 2;
+  int32 game_mode = 3;
+  int32 random_seed = 4;
+}
+
+message PlayerConnection {
+  string player_id = 1;
+  string player_name = 2;
+  string remote_endpoint = 3;
+}
+
+message StartRoomResponse {
+  bool success = 1;
+  string error_message = 2;
+}
+
+message StopRoomRequest {
+  string room_id = 1;
+  int32 end_reason = 2;
+}
+
+message StopRoomResponse {
+  bool success = 1;
+  int32 final_frame = 2;
+}
+
+message NodeStatsRequest {}
+
+message NodeStatsResponse {
+  string node_id = 1;
+  int32 active_rooms = 2;
+  int32 active_connections = 3;
+  float cpu_percent = 4;
+  float memory_mb = 5;
+}
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+  bool healthy = 1;
+}
+
+message GetRoomStateRequest {
+  string room_id = 1;
+}
+
+message GetRoomStateResponse {
+  string room_id = 1;
+  int32 status = 2;
+  int32 current_frame = 3;
+  repeated string player_ids = 4;
+}

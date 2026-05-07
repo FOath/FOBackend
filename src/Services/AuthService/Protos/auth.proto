@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+option csharp_namespace = "Auth";
+
+package fobackend.auth;
+
+service AuthService {
+  rpc Authenticate (AuthenticateRequest) returns (AuthenticateResponse);
+  rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc RevokeToken (RevokeTokenRequest) returns (RevokeTokenResponse);
+  rpc GetProfile (GetProfileRequest) returns (GetProfileResponse);
+  rpc UpdateProfile (UpdateProfileRequest) returns (UpdateProfileResponse);
+}
+
+message AuthenticateRequest {
+  string player_name = 1;
+  string password = 2;
+  string client_version = 3;
+  string device_id = 4;
+}
+
+message AuthenticateResponse {
+  string player_id = 1;
+  string player_name = 2;
+  string access_token = 3;
+  string refresh_token = 4;
+  int64 expires_at = 5;
+  bool is_new_player = 6;
+}
+
+message ValidateTokenRequest {
+  string access_token = 1;
+}
+
+message ValidateTokenResponse {
+  bool valid = 1;
+  string player_id = 2;
+  string player_name = 3;
+  int64 expires_at = 4;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_at = 3;
+}
+
+message RevokeTokenRequest {
+  string access_token = 1;
+}
+
+message RevokeTokenResponse {
+  bool success = 1;
+}
+
+message GetProfileRequest {
+  string player_id = 1;
+}
+
+message GetProfileResponse {
+  string player_id = 1;
+  string player_name = 2;
+  int32 total_games = 3;
+  int32 total_wins = 4;
+  int32 rating = 5;
+  int64 created_at = 6;
+  int64 last_login_at = 7;
+}
+
+message UpdateProfileRequest {
+  string player_id = 1;
+  string player_name = 2;
+}
+
+message UpdateProfileResponse {
+  bool success = 1;
+}

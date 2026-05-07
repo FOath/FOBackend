@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    
+    <!-- 项目信息 -->
+    <Description>FOBackend Core - 帧同步引擎、房间管理、玩家管理</Description>
+    <RootNamespace>FOBackend.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 项目引用 -->
+    <ProjectReference Include="..\FOBackend.Protocol\FOBackend.Protocol.csproj" />
+    <ProjectReference Include="..\FOBackend.Transport\FOBackend.Transport.csproj" />
+    
+    <!-- NuGet 包 -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

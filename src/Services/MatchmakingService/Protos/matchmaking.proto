@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+option csharp_namespace = "Matchmaking";
+
+package fobackend.matchmaking;
+
+service MatchmakingService {
+  rpc CreateRoom (CreateRoomRequest) returns (CreateRoomResponse);
+  rpc JoinRoom (JoinRoomRequest) returns (JoinRoomResponse);
+  rpc LeaveRoom (LeaveRoomRequest) returns (LeaveRoomResponse);
+  rpc SetReady (SetReadyRequest) returns (SetReadyResponse);
+  rpc GetRoom (GetRoomRequest) returns (GetRoomResponse);
+  rpc GetPlayerRoom (GetPlayerRoomRequest) returns (GetPlayerRoomResponse);
+  rpc ReportRoomClosed (ReportRoomClosedRequest) returns (ReportRoomClosedResponse);
+}
+
+message CreateRoomRequest {
+  string player_id = 1;
+  string player_name = 2;
+  int32 game_mode = 3;
+  map<string, string> options = 4;
+}
+
+message CreateRoomResponse {
+  string room_id = 1;
+  string invite_code = 2;
+  string battle_node_host = 3;
+  int32 battle_node_port = 4;
+  string battle_node_id = 5;
+}
+
+message JoinRoomRequest {
+  string player_id = 1;
+  string player_name = 2;
+  string room_id = 3;
+  string invite_code = 4;
+}
+
+message JoinRoomResponse {
+  bool success = 1;
+  string room_id = 2;
+  string battle_node_host = 3;
+  int32 battle_node_port = 4;
+  string error_message = 5;
+}
+
+message LeaveRoomRequest {
+  string player_id = 1;
+  string room_id = 2;
+}
+
+message LeaveRoomResponse {
+  bool success = 1;
+}
+
+message SetReadyRequest {
+  string player_id = 1;
+  string room_id = 2;
+  bool is_ready = 3;
+}
+
+message SetReadyResponse {
+  bool success = 1;
+  bool all_ready = 2;
+}
+
+message GetRoomRequest {
+  string room_id = 1;
+}
+
+message GetRoomResponse {
+  RoomInfo room = 1;
+}
+
+message GetPlayerRoomRequest {
+  string player_id = 1;
+}
+
+message GetPlayerRoomResponse {
+  string room_id = 1;
+  RoomInfo room = 2;
+}
+
+message ReportRoomClosedRequest {
+  string room_id = 1;
+  string battle_node_id = 2;
+  int32 end_reason = 3;
+  int32 total_frames = 4;
+}
+
+message ReportRoomClosedResponse {
+  bool success = 1;
+}
+
+message RoomInfo {
+  string room_id = 1;
+  int32 game_mode = 2;
+  int32 status = 3;
+  string host_player_id = 4;
+  repeated PlayerSlotInfo players = 5;
+  string battle_node_id = 6;
+  int64 created_at = 7;
+}
+
+message PlayerSlotInfo {
+  string player_id = 1;
+  string player_name = 2;
+  int32 slot_number = 3;
+  bool is_ready = 4;
+  int64 join_time = 5;
+}

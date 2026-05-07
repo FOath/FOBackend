@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    
+    <!-- 项目信息 -->
+    <Description>FOBackend Persistence - 数据库持久化层 (SQLite + Dapper)</Description>
+    <RootNamespace>FOBackend.Persistence</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 项目引用 -->
+    <ProjectReference Include="..\FOBackend.Protocol\FOBackend.Protocol.csproj" />
+    <ProjectReference Include="..\FOBackend.Infrastructure\FOBackend.Infrastructure.csproj" />
+    
+    <!-- NuGet 包 -->
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Dapper" Version="2.1.72" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Npgsql" Version="10.0.2" />
+  </ItemGroup>
+
+</Project>
