@@ -4,7 +4,7 @@
 # ============================================================
 
 # 阶段 1: 构建阶段
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.azure.cn/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # 复制项目文件并还原依赖（利用Docker缓存层）
@@ -20,7 +20,7 @@ RUN dotnet publish FOBackend.sln \
     --no-restore
 
 # 阶段 2: 运行时镜像（精简版）
-FROM mcr.microsoft.com/dotnet/runtime:8.0 AS final
+FROM mcr.azure.cn/dotnet/runtime:8.0 AS final
 
 WORKDIR /app
 

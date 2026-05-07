@@ -1,8 +1,8 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.azure.cn/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8081
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.azure.cn/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["src/Services/AuthService/AuthService.csproj", "src/Services/AuthService/"]
 COPY ["src/FOBackend.Protocol/FOBackend.Protocol.csproj", "src/FOBackend.Protocol/"]

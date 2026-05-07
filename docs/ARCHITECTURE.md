@@ -1855,7 +1855,7 @@ services:
 
 ```dockerfile
 # Dockerfile（多阶段构建）
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.azure.cn/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY src/*.sln .
 COPY src/FOBackend.Protocol/*.csproj ./FOBackend.Protocol/
@@ -1868,7 +1868,7 @@ RUN dotnet restore FOBackend.sln
 COPY src/ .
 RUN dotnet publish FOBackend.sln -c Release -o /app/publish
 
-FROM mcr.microsoft.com/dotnet/runtime:8.0 AS runtime
+FROM mcr.azure.cn/dotnet/runtime:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 7777/udp

@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.azure.cn/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 7777/udp
 EXPOSE 9081
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.azure.cn/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY ["src/Services/BattleService/BattleService.csproj", "src/Services/BattleService/"]
 COPY ["src/FOBackend.Protocol/FOBackend.Protocol.csproj", "src/FOBackend.Protocol/"]
