@@ -210,9 +210,9 @@ PublishProfiles/
 ehthumbs.db
 Thumbs.db
 
-# Project specific
-data/
-logs/
+# Project specific（仅忽略仓库根目录，避免误伤 src/**/Data 等源码目录）
+/data/
+/logs/
 *.db
 *.sqlite
 *.sqlite3
